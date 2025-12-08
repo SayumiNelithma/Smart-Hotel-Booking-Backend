@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "seed": "ts-node src/seed.ts",
+    "build": "npm install && tsc",
+    "start": "node ./dist/index.js",
     "migrate:stripe": "ts-node src/scripts/migrate-hotels-stripe.ts"
   },
   "author": "",
