@@ -3,26 +3,30 @@ import { config } from "dotenv";
 
 config();
 
-// Validate Stripe key on module load
+// Read Stripe key from env
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
 if (!stripeSecretKey) {
   console.error("⚠️ STRIPE_SECRET_KEY is not set in environment variables");
-  console.error("   Please add STRIPE_SECRET_KEY to your Backend/.env file");
+  console.error("   Please add STRIPE_SECRET_KEY to your Backend/.env file or Render env vars");
+  // Fail fast so we don't run the app without Stripe configured
+  throw new Error("STRIPE_SECRET_KEY is required to initialize Stripe");
 } else {
-  // Validate key format
+  // Optional: basic format check
   if (!stripeSecretKey.startsWith("sk_test_") && !stripeSecretKey.startsWith("sk_live_")) {
-    console.warn("⚠️ STRIPE_SECRET_KEY doesn't match expected format (should start with sk_test_ or sk_live_)");
+    console.warn(
+      "⚠️ STRIPE_SECRET_KEY doesn't match expected format (should start with sk_test_ or sk_live_)"
+    );
   } else {
     const keyType = stripeSecretKey.startsWith("sk_test_") ? "TEST" : "LIVE";
     console.log(`✅ Stripe ${keyType} key loaded successfully`);
   }
 }
 
-// Initialize Stripe client (will throw error if key is invalid when used)
-export const stripe = stripeSecretKey 
-  ? new Stripe(stripeSecretKey, {
-      apiVersion: "2024-12-18.acacia", // Use a valid Stripe API version
-    })
-  : null as any; // Type assertion to allow import, but will fail at runtime if used
-
+// Initialize Stripe client
+export const stripe = new Stripe(stripeSecretKey, {
+  // This must match the literal type expected by your installed `stripe` package
+  apiVersion: "2025-10-29.clover",
+  // If you prefer to be explicit about types:
+  // apiVersion: "2025-10-29.clover" as Stripe.LatestApiVersion,
+});
