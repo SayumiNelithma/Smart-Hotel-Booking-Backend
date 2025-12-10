@@ -26,7 +26,7 @@ app.use(express.text());
 // Enable CORS for frontend
 app.use(
   cors({
-    origin: "https://smart-hotel-booking-frontend.netlify.app/",
+    origin: "https://smart-hotel-booking-frontend.netlify.app",
   })
 );
 
